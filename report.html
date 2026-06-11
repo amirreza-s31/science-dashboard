@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گزارش تعاملی | واکنش‌گرا</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0f877c;
+            --primary-light: #44b5ab;
+            --text-light: #ffffff;
+            --text-muted: #e0e0e0;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, "B Yekan", sans-serif; }
+
+        body {
+            /* استفاده از عکس پس‌زمینه محلی شما */
+            background: url('images/bg-main.jpg') no-repeat center center fixed;
+            background-size: cover; color: var(--text-light); line-height: 1.9; overflow-x: hidden;
+        }
+
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 30, 40, 0.75); z-index: -1; }
+        .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.05); z-index: 9999; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary-light); transition: width 0.1s ease; box-shadow: 0 0 10px var(--primary-light); }
+        .back-btn {
+            position: fixed; top: 25px; right: 25px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); color: var(--text-light); padding: 12px 24px; border-radius: 30px;
+            text-decoration: none; font-weight: bold; border: 1px solid var(--glass-border); z-index: 1000; transition: all 0.3s;
+        }
+        .back-btn:hover { background: var(--primary-color); transform: translateX(-5px); }
+
+        .hero-section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .hero-section h1 { color: var(--primary-light); font-size: 3.5rem; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.4); max-width: 900px; }
+        .hero-section p { font-size: 1.3rem; color: var(--text-muted); }
+        .scroll-indicator { margin-top: 60px; font-size: 1rem; color: var(--text-muted); animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-12px); } 60% { transform: translateY(-6px); } }
+
+        .scrolly-container { display: flex; position: relative; align-items: flex-start; }
+        .scrolling-text { width: 50%; padding: 0 40px; padding-bottom: 100vh; }
+        .step { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .step-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); padding: 45px; border-radius: 24px; box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+            border-right: 6px solid var(--primary-light); opacity: 0; transform: translateY(40px); transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .step-card.is-active { opacity: 1; transform: translateY(0); background: rgba(255, 255, 255, 0.15); }
+        .step-card h2 { color: var(--primary-light); margin-bottom: 20px; font-size: 1.8rem; }
+        .step-card p { color: var(--text-light); text-align: justify; font-size: 1.1rem; }
+
+        .sticky-visual {
+            position: sticky; top: 10vh; width: 45%; height: 80vh; margin: 10vh 2.5%;
+            border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); background: rgba(0,0,0,0.2);
+        }
+        .sticky-visual img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease-in-out; }
+        .sticky-visual img.active { opacity: 1; }
+
+        @media (max-width: 900px) {
+            .hero-section h1 { font-size: 2.2rem; }
+            .hero-section p { font-size: 1rem; }
+            .scrolly-container { display: block; }
+            .sticky-visual {
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                margin: 0; border-radius: 0; z-index: -1; border: none; box-shadow: none;
+            }
+            .sticky-visual::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1; }
+            .sticky-visual img { z-index: 0; }
+            .scrolling-text { width: 100%; padding: 0 5%; padding-bottom: 30vh; }
+            .step-card { padding: 30px 20px; border-radius: 16px; }
+            .step-card h2 { font-size: 1.4rem; }
+            .step-card p { font-size: 1rem; }
+            .back-btn { top: 15px; right: 15px; padding: 10px 15px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    <a href="index.html" class="back-btn">→ بازگشت</a>
+
+    <div class="hero-section">
+        <h1>هوش مصنوعی در غربالگری پزشکی</h1>
+        <p>گزارش تحلیلی و تعاملی دستاوردهای فناوری</p>
+        <div class="scroll-indicator">برای شروع اسکرول کنید ↓</div>
+    </div>
+
+    <div class="scrolly-container">
+        <div class="scrolling-text">
+            <div class="step" data-index="0">
+                <div class="step-card">
+                    <h2>۱. طرح مسئله</h2>
+                    <p>در سال‌های اخیر، حجم داده‌های پزشکی افزایش یافته است. تحلیل انسانی نه تنها زمان‌بر است، بلکه با خستگی چشم پزشک، با درصدی از خطا همراه می‌شود. اینجاست که نیاز به هوش مصنوعی احساس شد.</p>
+                </div>
+            </div>
+            <div class="step" data-index="1">
+                <div class="step-card">
+                    <h2>۲. فرآیند آموزش</h2>
+                    <p>ما شبکه‌های عصبی عمیق را روی ۲ میلیون اسکن MRI آموزش دادیم. این مدل‌ها یاد گرفتند الگوهای میکروسکوپی را که از چشم ماهرترین متخصصان دور می‌ماند، شناسایی کنند.</p>
+                </div>
+            </div>
+            <div class="step" data-index="2">
+                <div class="step-card">
+                    <h2>۳. نتایج چشمگیر</h2>
+                    <p>سرعت تحلیل از ۴۵ دقیقه به ۳ دقیقه کاهش یافت و دقت تشخیص زودهنگام بیماری‌ها ۲۵٪ رشد کرد که یک انقلاب در پزشکی محسوب می‌شود.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sticky-visual" id="visualContainer">
+            <img src="images/step-1.jpg" class="visual-img active" alt="عکس ۱">
+            <img src="images/step-2.jpg" class="visual-img" alt="عکس ۲">
+            <img src="images/step-3.jpg" class="visual-img" alt="عکس ۳">
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+        const steps = gsap.utils.toArray('.step'), cards = gsap.utils.toArray('.step-card'), images = gsap.utils.toArray('.visual-img');
+
+        steps.forEach((step, index) => {
+            ScrollTrigger.create({
+                trigger: step,
+                start: "top 65%",
+                end: "bottom 35%", 
+                onEnter: () => activateStep(index),
+                onEnterBack: () => activateStep(index)
+            });
+        });
+
+        function activateStep(index) {
+            cards.forEach(card => card.classList.remove('is-active'));
+            cards[index].classList.add('is-active');
+            images.forEach(img => img.classList.remove('active'));
+            images[index].classList.add('active');
+        }
+    </script>
+</body>
+</html>

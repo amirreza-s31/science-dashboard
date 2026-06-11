@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد علمی | نمای شیشه‌ای و واکنش‌گرا</title>
+    <style>
+        :root {
+            --primary-color: #0f877c;
+            --primary-light: #44b5ab;
+            --text-light: #ffffff;
+            --text-muted: #e0e0e0;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, "B Yekan", sans-serif;
+        }
+
+        body {
+            /* استفاده از عکس پس‌زمینه محلی شما */
+            background: url('images/bg-main.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 30, 40, 0.7);
+            z-index: -1;
+        }
+
+        .bento-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px; 
+            grid-template-rows: auto 1fr; 
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            z-index: 1;
+        }
+
+        .bento-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .sidebar-card { grid-column: 1 / 2; grid-row: 1 / 3; padding: 20px 0; }
+        
+        .sidebar-header {
+            font-size: 1.2rem; font-weight: bold; color: var(--primary-light);
+            padding: 0 20px 20px 20px; border-bottom: 1px solid var(--glass-border); margin-bottom: 10px;
+        }
+
+        .sidebar-items { overflow-y: auto; padding: 0 10px; height: calc(100% - 60px); }
+        .sidebar-items::-webkit-scrollbar { width: 6px; height: 6px; }
+        .sidebar-items::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .report-item {
+            padding: 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer;
+            transition: all 0.3s ease; font-size: 0.95rem; border: 1px solid transparent; color: var(--text-muted);
+        }
+
+        .report-item:hover { background: rgba(255,255,255,0.05); color: var(--text-light); }
+        .report-item.active {
+            background: rgba(15, 135, 124, 0.4); border: 1px solid var(--primary-color);
+            color: var(--text-light); font-weight: bold;
+        }
+
+        .metric-card {
+            grid-column: 2 / 3; grid-row: 1 / 2;
+            background: rgba(15, 135, 124, 0.3); padding: 25px 30px;
+            flex-direction: row; align-items: center; justify-content: space-between;
+            border: 1px solid rgba(15, 135, 124, 0.5);
+        }
+
+        .metric-tag {
+            background: rgba(0,0,0,0.3); color: var(--primary-light); padding: 5px 15px;
+            border-radius: 6px; font-size: 0.85rem; width: fit-content; margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .metric-label { font-size: 1.2rem; opacity: 0.9; }
+        .metric-value { font-size: 3.5rem; font-weight: bold; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        .detail-card { grid-column: 2 / 3; grid-row: 2 / 3; padding: 40px; justify-content: flex-start; }
+        .detail-card h2 { color: var(--primary-light); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .meta-info {
+            display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.9rem;
+            color: var(--text-muted); margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed var(--glass-border);
+        }
+        .meta-info span { background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .summary { font-size: 1.1rem; line-height: 1.9; color: var(--text-light); text-align: justify; margin-bottom: 30px; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px; padding: 15px 35px;
+            background-color: var(--primary-color); color: #ffffff; text-decoration: none;
+            border-radius: 10px; transition: all 0.3s; font-weight: bold; margin-top: auto;
+            width: fit-content; box-shadow: 0 4px 15px rgba(15, 135, 124, 0.4); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn:hover { background-color: #0b6b62; transform: translateY(-2px); }
+        .btn .arrow { transition: transform 0.3s; }
+        .btn:hover .arrow { transform: translateX(-8px); }
+
+        .image-card { grid-column: 3 / 4; grid-row: 1 / 3; }
+        .image-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s ease-in-out; opacity: 0; z-index: 1; }
+        .image-card img.active { opacity: 1; z-index: 2; }
+
+        .slide-up-anim { animation: slideUpEffect 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes slideUpEffect { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) {
+            body { height: auto; min-height: 100vh; overflow-y: auto; align-items: flex-start; }
+            .bento-container { display: flex; flex-direction: column; height: auto; gap: 15px; }
+            .sidebar-card { padding: 15px 10px; order: 1; }
+            .sidebar-header { font-size: 1rem; padding: 0 10px 10px 10px; margin-bottom: 5px; }
+            .sidebar-items { display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; }
+            .report-item { flex: 0 0 auto; margin-bottom: 0; margin-left: 10px; white-space: nowrap; padding: 10px 20px; }
+            .image-card { order: 2; height: 250px; min-height: 250px; }
+            .metric-card { order: 3; padding: 20px; flex-wrap: wrap; gap: 15px; }
+            .metric-value { font-size: 2.5rem; }
+            .detail-card { order: 4; padding: 25px; }
+            .detail-card h2 { font-size: 1.5rem; }
+            .summary { font-size: 1rem; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    <div class="bento-container">
+        <div class="bento-card sidebar-card">
+            <div class="sidebar-header">فهرست گزارش‌ها</div>
+            <div class="sidebar-items" id="sidebarItems"></div>
+        </div>
+
+        <div class="bento-card metric-card anim-target" id="metricCard">
+            <div class="metric-info">
+                <div class="metric-tag" id="displayTag">دسته بندی</div>
+                <div class="metric-label" id="displayMetricText">دستاورد</div>
+            </div>
+            <div class="metric-value" id="displayMetricVal">٪</div>
+        </div>
+
+        <div class="bento-card detail-card anim-target" id="detailCard">
+            <div>
+                <h2 id="displayTitle">عنوان گزارش</h2>
+                <div class="meta-info">
+                    <span id="displayAuthor">نویسنده</span>
+                    <span id="displayDate">تاریخ</span>
+                </div>
+                <p class="summary" id="displaySummary">خلاصه...</p>
+            </div>
+            <a href="report.html" class="btn" id="displayLink">مشاهده کامل گزارش <span class="arrow">←</span></a>
+        </div>
+
+        <div class="bento-card image-card">
+            <img id="imgFront" src="" alt="تصویر گزارش" class="active">
+            <img id="imgBack" src="" alt="تصویر گزارش">
+        </div>
+    </div>
+
+    <script>
+        // آدرس عکس‌ها به فایل‌های محلی پوشه images تغییر یافت
+        const reports = [
+            { title: "پیشرفت‌های هوش مصنوعی", tag: "هوش مصنوعی", author: "دکتر م. احمدی", date: "۱۵ خرداد", summary: "بررسی الگوریتم‌های جدید یادگیری عمیق در تشخیص زودهنگام بیماری‌های سخت‌علاج.", metricVal: "۲۵٪", metricText: "افزایش سرعت", image: "images/report-ai.jpg", link: "report.html" },
+            { title: "بهینه‌سازی سرورها", tag: "زیرساخت", author: "مهندس س. رضایی", date: "۱۰ خرداد", summary: "تغییر سیستم خنک‌کننده مایع و هوشمندسازی مدارها برای کنترل هدررفت انرژی.", metricVal: "۱۸٪", metricText: "کاهش مصرف", image: "images/report-server.jpg", link: "report.html" },
+            { title: "نانومواد در باتری‌ها", tag: "نانو فناوری", author: "دکتر آ. حسینی", date: "۰۲ خرداد", summary: "ترکیب نانولوله‌های کربنی با آلیاژ لیتیم برای ارتقای چگالی ذخیره انرژی.", metricVal: "۲X", metricText: "افزایش طول عمر", image: "images/report-nano.jpg", link: "report.html" }
+        ];
+
+        let currentIndex = 0, timer, isFrontActive = true;
+        const sidebarItems = document.getElementById('sidebarItems'), metricCard = document.getElementById('metricCard'), detailCard = document.getElementById('detailCard'), displayTag = document.getElementById('displayTag'), displayMetricVal = document.getElementById('displayMetricVal'), displayMetricText = document.getElementById('displayMetricText'), displayTitle = document.getElementById('displayTitle'), displayAuthor = document.getElementById('displayAuthor'), displayDate = document.getElementById('displayDate'), displaySummary = document.getElementById('displaySummary'), displayLink = document.getElementById('displayLink'), imgFront = document.getElementById('imgFront'), imgBack = document.getElementById('imgBack');
+
+        function buildSidebar() { reports.forEach((report, index) => { const div = document.createElement('div'); div.className = 'report-item'; div.textContent = report.title; div.onclick = () => selectReport(index); sidebarItems.appendChild(div); }); }
+
+        function showReport(index) {
+            const report = reports[index];
+            metricCard.classList.remove('slide-up-anim'); detailCard.classList.remove('slide-up-anim');
+            void metricCard.offsetWidth; void detailCard.offsetWidth;
+            displayTag.textContent = report.tag; displayMetricVal.textContent = report.metricVal; displayMetricText.textContent = report.metricText; displayTitle.textContent = report.title; displayAuthor.textContent = report.author; displayDate.textContent = report.date; displaySummary.textContent = report.summary; displayLink.href = report.link;
+            metricCard.classList.add('slide-up-anim'); detailCard.classList.add('slide-up-anim');
+
+            if (isFrontActive) { imgBack.src = report.image; imgBack.onload = () => { imgBack.classList.add('active'); imgFront.classList.remove('active'); isFrontActive = false; imgBack.onload = null; }; } 
+            else { imgFront.src = report.image; imgFront.onload = () => { imgFront.classList.add('active'); imgBack.classList.remove('active'); isFrontActive = true; imgFront.onload = null; }; }
+
+            const items = document.querySelectorAll('.report-item');
+            items.forEach(item => item.classList.remove('active')); items[index].classList.add('active');
+            items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        function selectReport(index) { currentIndex = index; showReport(currentIndex); resetTimer(); }
+        function nextReport() { currentIndex = (currentIndex + 1) % reports.length; showReport(currentIndex); }
+        function startTimer() { timer = setInterval(nextReport, 6000); }
+        function resetTimer() { clearInterval(timer); startTimer(); }
+
+        imgFront.src = reports[0].image; buildSidebar(); showReport(currentIndex); startTimer();
+    </script>
+</body>
+</html>
