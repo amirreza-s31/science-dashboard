@@ -129,20 +129,29 @@
         .slide-up-anim { animation: slideUpEffect 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes slideUpEffect { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* ----- کدهای واکنش‌گرا برای موبایل (کاملاً بازطراحی شده بر اساس سلسله مراتب محتوا) ----- */
         @media (max-width: 900px) {
-            body { height: auto; min-height: 100vh; overflow-y: auto; align-items: flex-start; }
+            body { height: auto; min-height: 100vh; overflow-y: auto; align-items: flex-start; padding: 15px; }
             .bento-container { display: flex; flex-direction: column; height: auto; gap: 15px; }
-            .sidebar-card { padding: 15px 10px; order: 1; }
+            
+            /* ۱. منوی گزارش‌ها: اسکرول عمودی و جمع‌وجور برای پشتیبانی از تعداد بالای گزارش */
+            .sidebar-card { padding: 15px 10px; order: 1; max-height: 220px; }
             .sidebar-header { font-size: 1rem; padding: 0 10px 10px 10px; margin-bottom: 5px; }
-            .sidebar-items { display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; }
-            .report-item { flex: 0 0 auto; margin-bottom: 0; margin-left: 10px; white-space: nowrap; padding: 10px 20px; }
-            .image-card { order: 2; height: 250px; min-height: 250px; }
-            .metric-card { order: 3; padding: 20px; flex-wrap: wrap; gap: 15px; }
-            .metric-value { font-size: 2.2rem; }
-            .detail-card { order: 4; padding: 25px; }
+            .sidebar-items { display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 5px; }
+            .report-item { flex: 0 0 auto; margin-bottom: 6px; padding: 12px 15px; }
+            
+            /* ۲. محتوای اصلی: بلافاصله بعد از منو نمایش داده می‌شود */
+            .detail-card { order: 2; padding: 25px; }
             .detail-card h2 { font-size: 1.5rem; }
             .summary { font-size: 1rem; }
             .btn { width: 100%; justify-content: center; }
+
+            /* ۳. کارت آمار */
+            .metric-card { order: 3; padding: 20px; flex-wrap: wrap; gap: 15px; }
+            .metric-value { font-size: 2.2rem; }
+
+            /* ۴. تصویر گزارش: در پایین‌ترین بخش قرار می‌گیرد */
+            .image-card { order: 4; height: 200px; min-height: 200px; }
         }
     </style>
 </head>
@@ -190,7 +199,7 @@
                 summary: "آسیب به زیرساخت‌های حیاتی، فراتر از تخریب‌های فیزیکی، زنجیره‌ای از بحران‌های ماندگار را در حوزه‌های زیست‌محیطی و سلامت عمومی به همراه دارد. رخدادهایی نظیر نشت مواد شیمیایی به سرعت کیفیت آب، خاک و زنجیره غذایی را تهدید می‌کنند.", 
                 metricVal: "۲۰,۰۰۰ تن", 
                 metricText: "دوده روزانه (جنگ کویت)", 
-                image: "images/report-env.jpg", // عکسی که دانلود می‌کنید
+                image: "images/report-env.jpg",
                 link: "report.html" 
             },
             { 
@@ -228,7 +237,6 @@
             void metricCard.offsetWidth; void detailCard.offsetWidth;
             displayTag.textContent = report.tag; displayMetricVal.textContent = report.metricVal; displayMetricText.textContent = report.metricText; displayTitle.textContent = report.title; displayAuthor.textContent = report.author; displayDate.textContent = report.date; displaySummary.textContent = report.summary; displayLink.href = report.link;
             
-            // غیرفعال کردن دکمه برای ماکت‌ها
             if(report.link === "#") {
                 displayLink.style.opacity = "0.5";
                 displayLink.style.pointerEvents = "none";
