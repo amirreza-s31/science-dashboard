@@ -22,7 +22,6 @@
         }
 
         body {
-            /* استفاده از عکس پس‌زمینه محلی شما */
             background: url('images/bg-main.jpg') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-light);
@@ -100,7 +99,7 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
         .metric-label { font-size: 1.2rem; opacity: 0.9; }
-        .metric-value { font-size: 3.5rem; font-weight: bold; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .metric-value { font-size: 3.5rem; font-weight: bold; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3); direction: ltr; }
 
         .detail-card { grid-column: 2 / 3; grid-row: 2 / 3; padding: 40px; justify-content: flex-start; }
         .detail-card h2 { color: var(--primary-light); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -139,7 +138,7 @@
             .report-item { flex: 0 0 auto; margin-bottom: 0; margin-left: 10px; white-space: nowrap; padding: 10px 20px; }
             .image-card { order: 2; height: 250px; min-height: 250px; }
             .metric-card { order: 3; padding: 20px; flex-wrap: wrap; gap: 15px; }
-            .metric-value { font-size: 2.5rem; }
+            .metric-value { font-size: 2.2rem; }
             .detail-card { order: 4; padding: 25px; }
             .detail-card h2 { font-size: 1.5rem; }
             .summary { font-size: 1rem; }
@@ -172,7 +171,7 @@
                 </div>
                 <p class="summary" id="displaySummary">خلاصه...</p>
             </div>
-            <a href="report.html" class="btn" id="displayLink">مشاهده کامل گزارش <span class="arrow">←</span></a>
+            <a href="#" class="btn" id="displayLink">مشاهده کامل گزارش <span class="arrow">←</span></a>
         </div>
 
         <div class="bento-card image-card">
@@ -182,11 +181,40 @@
     </div>
 
     <script>
-        // آدرس عکس‌ها به فایل‌های محلی پوشه images تغییر یافت
         const reports = [
-            { title: "پیشرفت‌های هوش مصنوعی", tag: "هوش مصنوعی", author: "دکتر م. احمدی", date: "۱۵ خرداد", summary: "بررسی الگوریتم‌های جدید یادگیری عمیق در تشخیص زودهنگام بیماری‌های سخت‌علاج.", metricVal: "۲۵٪", metricText: "افزایش سرعت", image: "images/report-ai.jpg", link: "report.html" },
-            { title: "بهینه‌سازی سرورها", tag: "زیرساخت", author: "مهندس س. رضایی", date: "۱۰ خرداد", summary: "تغییر سیستم خنک‌کننده مایع و هوشمندسازی مدارها برای کنترل هدررفت انرژی.", metricVal: "۱۸٪", metricText: "کاهش مصرف", image: "images/report-server.jpg", link: "report.html" },
-            { title: "نانومواد در باتری‌ها", tag: "نانو فناوری", author: "دکتر آ. حسینی", date: "۰۲ خرداد", summary: "ترکیب نانولوله‌های کربنی با آلیاژ لیتیم برای ارتقای چگالی ذخیره انرژی.", metricVal: "۲X", metricText: "افزایش طول عمر", image: "images/report-nano.jpg", link: "report.html" }
+            { 
+                title: "آسیب‌های زیست‌محیطی", 
+                tag: "محیط زیست", 
+                author: "نامشخص", 
+                date: "خرداد ۱۴۰۵", 
+                summary: "آسیب به زیرساخت‌های حیاتی، فراتر از تخریب‌های فیزیکی، زنجیره‌ای از بحران‌های ماندگار را در حوزه‌های زیست‌محیطی و سلامت عمومی به همراه دارد. رخدادهایی نظیر نشت مواد شیمیایی به سرعت کیفیت آب، خاک و زنجیره غذایی را تهدید می‌کنند.", 
+                metricVal: "۲۰,۰۰۰ تن", 
+                metricText: "دوده روزانه (جنگ کویت)", 
+                image: "images/report-env.jpg", // عکسی که دانلود می‌کنید
+                link: "report.html" 
+            },
+            { 
+                title: "گزارش آزمایشی ۲", 
+                tag: "ماکت داده", 
+                author: "نامشخص", 
+                date: "---", 
+                summary: "این یک متن آزمایشی است. این گزارش در فازهای بعدی توسعه سایت با داده‌های واقعی جایگزین خواهد شد.", 
+                metricVal: "---", 
+                metricText: "در انتظار داده", 
+                image: "images/report-server.jpg", 
+                link: "#" 
+            },
+            { 
+                title: "گزارش آزمایشی ۳", 
+                tag: "ماکت داده", 
+                author: "نامشخص", 
+                date: "---", 
+                summary: "این یک متن آزمایشی است. این گزارش در فازهای بعدی توسعه سایت با داده‌های واقعی جایگزین خواهد شد.", 
+                metricVal: "---", 
+                metricText: "در انتظار داده", 
+                image: "images/report-nano.jpg", 
+                link: "#" 
+            }
         ];
 
         let currentIndex = 0, timer, isFrontActive = true;
@@ -199,6 +227,18 @@
             metricCard.classList.remove('slide-up-anim'); detailCard.classList.remove('slide-up-anim');
             void metricCard.offsetWidth; void detailCard.offsetWidth;
             displayTag.textContent = report.tag; displayMetricVal.textContent = report.metricVal; displayMetricText.textContent = report.metricText; displayTitle.textContent = report.title; displayAuthor.textContent = report.author; displayDate.textContent = report.date; displaySummary.textContent = report.summary; displayLink.href = report.link;
+            
+            // غیرفعال کردن دکمه برای ماکت‌ها
+            if(report.link === "#") {
+                displayLink.style.opacity = "0.5";
+                displayLink.style.pointerEvents = "none";
+                displayLink.innerHTML = "به زودی...";
+            } else {
+                displayLink.style.opacity = "1";
+                displayLink.style.pointerEvents = "auto";
+                displayLink.innerHTML = 'مشاهده کامل گزارش <span class="arrow">←</span>';
+            }
+
             metricCard.classList.add('slide-up-anim'); detailCard.classList.add('slide-up-anim');
 
             if (isFrontActive) { imgBack.src = report.image; imgBack.onload = () => { imgBack.classList.add('active'); imgFront.classList.remove('active'); isFrontActive = false; imgBack.onload = null; }; } 
