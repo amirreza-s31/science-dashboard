@@ -67,23 +67,22 @@
         }
         .sticky-visual img.active { opacity: 1; }
 
-        /* ----- کدهای واکنش‌گرا برای موبایل (کاملاً اصلاح شده برای رفع باگ‌های UX) ----- */
+        /* ----- کدهای واکنش‌گرا برای موبایل ----- */
         @media (max-width: 900px) {
             .hero-section h1 { font-size: 2.2rem; }
             .hero-section p { font-size: 1rem; }
             
             .scrolly-container { 
                 display: flex; 
-                flex-direction: column; /* عکس در موبایل بالاتر از متن قرار می‌گیرد */
+                flex-direction: column; 
             }
             
-            /* استفاده از sticky باعث می‌شود عکس فقط وقتی بهش رسیدیم به بالا بچسبد */
             .sticky-visual {
                 order: -1; 
                 position: sticky; 
                 top: 0; 
                 width: 100vw; 
-                height: 45vh; /* ۴۵ درصد از بالای صفحه رو می‌گیره */
+                height: 45vh; 
                 margin: 0; 
                 border-radius: 0 0 20px 20px; 
                 z-index: 10; 
@@ -98,10 +97,9 @@
             .scrolling-text { 
                 width: 100%; 
                 padding: 0 5%; 
-                padding-bottom: 10vh; /* حذف فضای خالی اضافه در انتهای صفحه */
+                padding-bottom: 10vh; 
             }
             
-            /* ارتفاع ۵۵ درصدی باعث می‌شه کارت‌ها خیلی سریع‌تر و بدون اسکرول طولانی ظاهر بشن */
             .step { 
                 min-height: 55vh; 
                 padding-top: 0; 
@@ -179,11 +177,12 @@
         gsap.registerPlugin(ScrollTrigger);
         const steps = gsap.utils.toArray('.step'), cards = gsap.utils.toArray('.step-card'), images = gsap.utils.toArray('.visual-img');
 
+        // منطق جدید جاوااسکریپت برای جلوگیری از تداخل کارت‌ها
         steps.forEach((step, index) => {
             ScrollTrigger.create({
                 trigger: step,
-                start: "top 65%",
-                end: "bottom 35%", 
+                start: "top 65%", // یک خط فرضی دقیق در ۶۵ درصد صفحه
+                end: "bottom 65%", 
                 onEnter: () => activateStep(index),
                 onEnterBack: () => activateStep(index)
             });
@@ -195,6 +194,9 @@
             images.forEach(img => img.classList.remove('active'));
             images[index].classList.add('active');
         }
+
+        // روشن کردن کارت اول به صورت پیش‌فرض در زمان ورود به صفحه
+        activateStep(0); 
     </script>
 </body>
 </html>
