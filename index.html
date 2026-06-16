@@ -101,7 +101,21 @@
         .metric-label { font-size: 1.2rem; opacity: 0.9; }
         .metric-value { font-size: 3.5rem; font-weight: bold; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3); direction: ltr; }
 
-        .detail-card { grid-column: 2 / 3; grid-row: 2 / 3; padding: 40px; justify-content: flex-start; }
+        /* ----- تغییرات جدید برای فیکس کردن دکمه در دسکتاپ ----- */
+        .detail-card { 
+            grid-column: 2 / 3; grid-row: 2 / 3; padding: 30px 35px; 
+            justify-content: space-between; /* پخش کردن محتوا بین بالا و پایین */
+        }
+        
+        .text-content {
+            overflow-y: auto; /* اسکرول مخفی برای متن‌های طولانی */
+            padding-left: 15px; 
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        .text-content::-webkit-scrollbar { width: 5px; }
+        .text-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
         .detail-card h2 { color: var(--primary-light); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         .meta-info {
@@ -110,13 +124,14 @@
         }
         .meta-info span { background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
 
-        .summary { font-size: 1.1rem; line-height: 1.9; color: var(--text-light); text-align: justify; margin-bottom: 30px; }
+        .summary { font-size: 1.1rem; line-height: 1.9; color: var(--text-light); text-align: justify; margin-bottom: 10px; }
 
         .btn {
             display: inline-flex; align-items: center; gap: 10px; padding: 15px 35px;
             background-color: var(--primary-color); color: #ffffff; text-decoration: none;
-            border-radius: 10px; transition: all 0.3s; font-weight: bold; margin-top: auto;
+            border-radius: 10px; transition: all 0.3s; font-weight: bold;
             width: fit-content; box-shadow: 0 4px 15px rgba(15, 135, 124, 0.4); border: 1px solid rgba(255,255,255,0.2);
+            flex-shrink: 0; /* جلوگیری از فشرده شدن دکمه */
         }
         .btn:hover { background-color: #0b6b62; transform: translateY(-2px); }
         .btn .arrow { transition: transform 0.3s; }
@@ -129,29 +144,28 @@
         .slide-up-anim { animation: slideUpEffect 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes slideUpEffect { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ----- کدهای واکنش‌گرا برای موبایل (کاملاً بازطراحی شده بر اساس سلسله مراتب محتوا) ----- */
+        /* ----- کدهای واکنش‌گرا برای موبایل ----- */
         @media (max-width: 900px) {
             body { height: auto; min-height: 100vh; overflow-y: auto; align-items: flex-start; padding: 15px; }
             .bento-container { display: flex; flex-direction: column; height: auto; gap: 15px; }
             
-            /* ۱. منوی گزارش‌ها: اسکرول عمودی و جمع‌وجور برای پشتیبانی از تعداد بالای گزارش */
             .sidebar-card { padding: 15px 10px; order: 1; max-height: 220px; }
             .sidebar-header { font-size: 1rem; padding: 0 10px 10px 10px; margin-bottom: 5px; }
             .sidebar-items { display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 5px; }
             .report-item { flex: 0 0 auto; margin-bottom: 6px; padding: 12px 15px; }
             
-            /* ۲. محتوای اصلی: بلافاصله بعد از منو نمایش داده می‌شود */
             .detail-card { order: 2; padding: 25px; }
             .detail-card h2 { font-size: 1.5rem; }
             .summary { font-size: 1rem; }
             .btn { width: 100%; justify-content: center; }
 
-            /* ۳. کارت آمار */
             .metric-card { order: 3; padding: 20px; flex-wrap: wrap; gap: 15px; }
             .metric-value { font-size: 2.2rem; }
 
-            /* ۴. تصویر گزارش: در پایین‌ترین بخش قرار می‌گیرد */
             .image-card { order: 4; height: 200px; min-height: 200px; }
+            
+            /* حذف پدینگ اضافی اسکرول بار در موبایل */
+            .text-content { padding-left: 0; overflow-y: visible; }
         }
     </style>
 </head>
@@ -172,7 +186,7 @@
         </div>
 
         <div class="bento-card detail-card anim-target" id="detailCard">
-            <div>
+            <div class="text-content">
                 <h2 id="displayTitle">عنوان گزارش</h2>
                 <div class="meta-info">
                     <span id="displayAuthor">نویسنده</span>
